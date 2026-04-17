@@ -2,13 +2,18 @@ import { useEffect, useState } from "react";
 import { useCars } from "../../hooks/useCars";
 import CarList from "./CarList";
 import type { Car } from "../../types/car";
-import { MAX_CAR_YEAR } from "../../data/constants";
+import { MAX_CAR_YEAR, MIN_CAR_YEAR } from "../../data/constants";
 
-const emptyForm: Omit<Car, "id"> = {
+type CarForm = Omit<Car, "id" | "year" | "pricePerDay"> & {
+  year: string;
+  pricePerDay: string;
+};
+
+const emptyForm: CarForm = {
   make: "",
   model: "",
-  year: MAX_CAR_YEAR,
-  pricePerDay: 0,
+  year: MAX_CAR_YEAR.toString(),
+  pricePerDay: "",
   licensePlate: "",
   rentalStatus: "available",
 };
@@ -27,7 +32,8 @@ const CarManagement = () => {
     handleDeleteCar,
   } = useCars();
 
-  const [form, setForm] = useState<Omit<Car, "id">>(emptyForm);
+  const [form, setForm] = useState<CarForm>(emptyForm);
+  const [formError, setFormError] = useState<string | null>(null);
   const [editingCar, setEditingCar] = useState<Car | null>(null);
 
   useEffect(() => {
@@ -41,32 +47,52 @@ const CarManagement = () => {
 
     if (name === "year" && Number(value) > MAX_CAR_YEAR) return;
 
-    setForm((prev) => ({
-      ...prev,
-      [name]: name === "year" || name === "pricePerDay" ? Number(value) : value,
-    }));
+    if (name === "pricePerDay" && value.includes("-")) {
+      return;
+    }
+
+    setForm((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async () => {
-    if (form.year > MAX_CAR_YEAR) return;
+    const parsed = {
+      ...form,
+      year: Number(form.year),
+      pricePerDay: Number(form.pricePerDay),
+    };
 
+    if (parsed.year < MIN_CAR_YEAR || parsed.year > MAX_CAR_YEAR) {
+      setFormError(`Rok musi być między ${MIN_CAR_YEAR} a ${MAX_CAR_YEAR}`);
+      return;
+    }
+    if (parsed.pricePerDay < 0) {
+      setFormError("Cena za dzień musi być większa lub równa 0");
+      return;
+    }
+
+    setFormError(null);
     if (editingCar) {
-      await handleUpdateCar({ ...form, id: editingCar.id });
+      await handleUpdateCar({ ...parsed, id: editingCar.id });
       setEditingCar(null);
     } else {
-      await handleAddCar(form);
+      await handleAddCar(parsed);
     }
     setForm(emptyForm);
   };
 
   const handleEdit = (car: Car) => {
     setEditingCar(car);
-    setForm(car);
+    setForm({
+      ...car,
+      year: car.year.toString(),
+      pricePerDay: car.pricePerDay.toString(),
+    });
   };
 
   const handleCancel = () => {
     setEditingCar(null);
     setForm(emptyForm);
+    setFormError(null);
   };
 
   return (
@@ -100,7 +126,7 @@ const CarManagement = () => {
             value={form.year}
             onChange={handleChange}
             className={inputClass}
-            min={1900}
+            min={MIN_CAR_YEAR}
             max={MAX_CAR_YEAR}
           />
           <input
@@ -153,7 +179,11 @@ const CarManagement = () => {
           )}
         </div>
       </div>
-
+      {formError && (
+        <p className="text-sm text-red-500 bg-red-50 border border-red-200 rounded-lg px-4 py-3">
+          {formError}
+        </p>
+      )}
       {error && (
         <p className="text-sm text-red-500 bg-red-50 border border-red-200 rounded-lg px-4 py-3">
           {error}
