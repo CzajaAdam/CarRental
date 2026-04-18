@@ -7,7 +7,9 @@ interface ProtectedRouteProps {
 const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const isLoggedIn = localStorage.getItem('isAdminLoggedIn') === 'true';
 
-  if (!isLoggedIn) return <Navigate to="/login" replace />;
+  if (!isLoggedIn) {
+    return <Navigate to="/login" replace />;
+  }
 
   return children;
 };

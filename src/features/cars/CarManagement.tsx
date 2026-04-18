@@ -4,7 +4,7 @@ import CarList from './CarList';
 import type { Car } from '../../types/car';
 import { MAX_CAR_YEAR, MIN_CAR_YEAR } from '../../data/constants';
 
-type CarForm = Omit<Car, 'id' | 'year' | 'pricePerDay'> & {
+type CarForm = Pick<Car, 'make' | 'model' | 'licensePlate' | 'rentalStatus'> & {
   year: string;
   pricePerDay: string;
 };
@@ -17,9 +17,6 @@ const emptyForm: CarForm = {
   licensePlate: '',
   rentalStatus: 'available',
 };
-
-const inputClass =
-  'w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition';
 
 const CarManagement = () => {
   const { cars, loading, error, handleFetchCars, handleAddCar, handleUpdateCar, handleDeleteCar } =
@@ -36,11 +33,11 @@ const CarManagement = () => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
 
-    if (name === 'year' && Number(value) > MAX_CAR_YEAR) {
+    if (name === 'year' && (Number(value) > MAX_CAR_YEAR || !/^\d+$|^$/.test(value))) {
       return;
     }
 
-    if (name === 'pricePerDay' && value.includes('-')) {
+    if (name === 'pricePerDay' && !/^\d+(\.\d+)?$|^$/.test(value)) {
       return;
     }
 
@@ -54,6 +51,10 @@ const CarManagement = () => {
       pricePerDay: Number(form.pricePerDay),
     };
 
+    if (parsed.make === '' || parsed.model === '' || parsed.licensePlate === '') {
+      setFormError('Wszystkie pola są wymagane');
+      return;
+    }
     if (parsed.year < MIN_CAR_YEAR || parsed.year > MAX_CAR_YEAR) {
       setFormError(`Rok musi być między ${MIN_CAR_YEAR} a ${MAX_CAR_YEAR}`);
       return;
@@ -64,7 +65,7 @@ const CarManagement = () => {
     }
 
     setFormError(null);
-    if (editingCar) {
+    if (editingCar !== null) {
       await handleUpdateCar({ ...parsed, id: editingCar.id });
       setEditingCar(null);
     } else {
@@ -73,7 +74,7 @@ const CarManagement = () => {
     setForm(emptyForm);
   };
 
-  const handleEdit = (car: Car) => {
+  const handleEditStart = (car: Car) => {
     setEditingCar(car);
     setForm({
       ...car,
@@ -82,7 +83,7 @@ const CarManagement = () => {
     });
   };
 
-  const handleCancel = () => {
+  const handleEditCancel = () => {
     setEditingCar(null);
     setForm(emptyForm);
     setFormError(null);
@@ -103,46 +104,61 @@ const CarManagement = () => {
             placeholder="Marka"
             value={form.make}
             onChange={handleChange}
-            className={inputClass}
+            className={
+              'w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition'
+            }
+            required
           />
           <input
             name="model"
             placeholder="Model"
             value={form.model}
             onChange={handleChange}
-            className={inputClass}
+            className={
+              'w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition'
+            }
+            required
           />
           <input
             name="year"
-            type="number"
+            type="string"
             placeholder="Rok"
             value={form.year}
             onChange={handleChange}
-            className={inputClass}
-            min={MIN_CAR_YEAR}
-            max={MAX_CAR_YEAR}
+            className={
+              'w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition'
+            }
+            required
           />
           <input
             name="pricePerDay"
-            type="number"
+            type="string"
             placeholder="Cena za dzień (zł)"
             value={form.pricePerDay}
             onChange={handleChange}
-            className={inputClass}
-            min={0}
+            className={
+              'w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition'
+            }
+            required
           />
           <input
             name="licensePlate"
             placeholder="Tablica rejestracyjna"
             value={form.licensePlate}
             onChange={handleChange}
-            className={inputClass}
+            className={
+              'w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition'
+            }
+            required
           />
           <select
             name="rentalStatus"
             value={form.rentalStatus}
             onChange={handleChange}
-            className={inputClass}
+            className={
+              'w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition'
+            }
+            required
           >
             <option value="available">Dostępny</option>
             <option disabled value="rented">
@@ -162,9 +178,9 @@ const CarManagement = () => {
           >
             {editingCar ? 'Zapisz zmiany' : 'Dodaj auto'}
           </button>
-          {editingCar && (
+          {editingCar !== null && (
             <button
-              onClick={handleCancel}
+              onClick={handleEditCancel}
               className="px-4 py-2 bg-gray-100 text-gray-600 text-sm font-medium rounded-lg hover:bg-gray-200 transition-colors"
             >
               Anuluj
@@ -172,12 +188,12 @@ const CarManagement = () => {
           )}
         </div>
       </div>
-      {formError && (
+      {formError !== null && (
         <p className="text-sm text-red-500 bg-red-50 border border-red-200 rounded-lg px-4 py-3">
           {formError}
         </p>
       )}
-      {error && (
+      {error !== null && (
         <p className="text-sm text-red-500 bg-red-50 border border-red-200 rounded-lg px-4 py-3">
           {error}
         </p>
@@ -185,7 +201,7 @@ const CarManagement = () => {
       {loading ? (
         <p className="text-center text-gray-400 py-8">Ładowanie...</p>
       ) : (
-        <CarList cars={cars} onEdit={handleEdit} onDelete={handleDeleteCar} />
+        <CarList cars={cars} onEdit={handleEditStart} onDelete={handleDeleteCar} />
       )}
     </div>
   );

@@ -40,7 +40,9 @@ export const useCars = () => {
     setError(null);
     try {
       const updatedCar = await updateCar(car);
-      setCars((prev) => prev.map((c) => (c.id === updatedCar.id ? updatedCar : c)));
+      setCars((prev) =>
+        prev.map((prevCar) => (prevCar.id === updatedCar.id ? updatedCar : prevCar))
+      );
     } catch (err) {
       setError('Failed to update car');
       console.error('Error updating car:', err);
@@ -54,7 +56,7 @@ export const useCars = () => {
     setError(null);
     try {
       await deleteCar(car.id);
-      setCars((prev) => prev.filter((c) => c.id !== car.id));
+      setCars((prev) => prev.filter((prevCar) => prevCar.id !== car.id));
     } catch (err) {
       setError('Failed to delete car');
       console.error('Error deleting car:', err);
