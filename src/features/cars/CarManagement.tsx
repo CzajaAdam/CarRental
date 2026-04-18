@@ -1,36 +1,29 @@
-import { useEffect, useState } from "react";
-import { useCars } from "../../hooks/useCars";
-import CarList from "./CarList";
-import type { Car } from "../../types/car";
-import { MAX_CAR_YEAR, MIN_CAR_YEAR } from "../../data/constants";
+import { useEffect, useState } from 'react';
+import { useCars } from '../../hooks/useCars';
+import CarList from './CarList';
+import type { Car } from '../../types/car';
+import { MAX_CAR_YEAR, MIN_CAR_YEAR } from '../../data/constants';
 
-type CarForm = Omit<Car, "id" | "year" | "pricePerDay"> & {
+type CarForm = Omit<Car, 'id' | 'year' | 'pricePerDay'> & {
   year: string;
   pricePerDay: string;
 };
 
 const emptyForm: CarForm = {
-  make: "",
-  model: "",
+  make: '',
+  model: '',
   year: MAX_CAR_YEAR.toString(),
-  pricePerDay: "",
-  licensePlate: "",
-  rentalStatus: "available",
+  pricePerDay: '',
+  licensePlate: '',
+  rentalStatus: 'available',
 };
 
 const inputClass =
-  "w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition";
+  'w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition';
 
 const CarManagement = () => {
-  const {
-    cars,
-    loading,
-    error,
-    handleFetchCars,
-    handleAddCar,
-    handleUpdateCar,
-    handleDeleteCar,
-  } = useCars();
+  const { cars, loading, error, handleFetchCars, handleAddCar, handleUpdateCar, handleDeleteCar } =
+    useCars();
 
   const [form, setForm] = useState<CarForm>(emptyForm);
   const [formError, setFormError] = useState<string | null>(null);
@@ -40,16 +33,14 @@ const CarManagement = () => {
     handleFetchCars();
   }, [handleFetchCars]);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
 
-    if (name === "year" && Number(value) > MAX_CAR_YEAR) {
+    if (name === 'year' && Number(value) > MAX_CAR_YEAR) {
       return;
     }
 
-    if (name === "pricePerDay" && value.includes("-")) {
+    if (name === 'pricePerDay' && value.includes('-')) {
       return;
     }
 
@@ -68,7 +59,7 @@ const CarManagement = () => {
       return;
     }
     if (parsed.pricePerDay < 0) {
-      setFormError("Cena za dzień musi być większa lub równa 0");
+      setFormError('Cena za dzień musi być większa lub równa 0');
       return;
     }
 
@@ -103,7 +94,7 @@ const CarManagement = () => {
 
       <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm flex flex-col gap-4">
         <h3 className="text-lg font-semibold text-gray-700">
-          {editingCar ? "Edytuj auto" : "Dodaj nowe auto"}
+          {editingCar ? 'Edytuj auto' : 'Dodaj nowe auto'}
         </h3>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -169,7 +160,7 @@ const CarManagement = () => {
             disabled={loading}
             className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors"
           >
-            {editingCar ? "Zapisz zmiany" : "Dodaj auto"}
+            {editingCar ? 'Zapisz zmiany' : 'Dodaj auto'}
           </button>
           {editingCar && (
             <button

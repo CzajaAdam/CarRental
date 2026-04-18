@@ -1,4 +1,4 @@
-import type { Car } from "../../types/car";
+import type { Car } from '../../types/car';
 
 interface CarListProps {
   cars: Car[];
@@ -6,16 +6,16 @@ interface CarListProps {
   onDelete: (car: Car) => void;
 }
 
-const statusLabel: Record<Car["rentalStatus"], string> = {
-  available: "Dostępny",
-  rented: "Wypożyczony",
-  overdue: "Przeterminowany",
+const statusLabel: Record<Car['rentalStatus'], string> = {
+  available: 'Dostępny',
+  rented: 'Wypożyczony',
+  overdue: 'Przeterminowany',
 };
 
-const statusClass: Record<Car["rentalStatus"], string> = {
-  available: "bg-green-100 text-green-700",
-  rented: "bg-red-100 text-red-700",
-  overdue: "bg-orange-100 text-orange-700",
+const statusClass: Record<Car['rentalStatus'], string> = {
+  available: 'bg-green-100 text-green-700',
+  rented: 'bg-red-100 text-red-700',
+  overdue: 'bg-orange-100 text-orange-700',
 };
 
 const CarList = ({ cars, onEdit, onDelete }: CarListProps) => {
@@ -26,7 +26,7 @@ const CarList = ({ cars, onEdit, onDelete }: CarListProps) => {
   return (
     <div className="flex flex-col gap-3">
       {cars.map((car) => {
-        const isDisabled = car.rentalStatus === "rented" || car.rentalStatus === "overdue";
+        const isDisabled = car.rentalStatus === 'rented' || car.rentalStatus === 'overdue';
 
         return (
           <div
