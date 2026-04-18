@@ -26,8 +26,7 @@ const CarList = ({ cars, onEdit, onDelete }: CarListProps) => {
   return (
     <div className="flex flex-col gap-3">
       {cars.map((car) => {
-        const isDisabled =
-          car.rentalStatus === "rented" || car.rentalStatus === "overdue";
+        const isDisabled = car.rentalStatus === "rented" || car.rentalStatus === "overdue";
 
         return (
           <div

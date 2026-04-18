@@ -45,7 +45,9 @@ const CarManagement = () => {
   ) => {
     const { name, value } = e.target;
 
-    if (name === "year" && Number(value) > MAX_CAR_YEAR) return;
+    if (name === "year" && Number(value) > MAX_CAR_YEAR) {
+      return;
+    }
 
     if (name === "pricePerDay" && value.includes("-")) {
       return;
