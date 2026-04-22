@@ -1,6 +1,8 @@
 import { FetchJSON } from './api';
 import { API_URL } from '../data/constants';
 import type { Rental } from '../types/rental';
+import type { Car } from '../types/car';
+import { isOverdue } from '../features/cars/utils';
 
 export const fetchRentals = async () => {
   return await FetchJSON(`${API_URL}/rentals`);
@@ -33,4 +35,22 @@ export const fetchRentalsByPhone = async (phone: string) => {
   const rentals = await FetchJSON(`${API_URL}/rentals`);
   const normalized = phone.replace(/\s/g, '');
   return rentals.filter((rental: Rental) => rental.phone.replace(/\s/g, '') === normalized);
+};
+
+export const checkAndUpdateOverdueStatus = async (
+  cars: Car[],
+  rentals: Rental[],
+  updateCarStatus: (car: Car) => Promise<void>
+) => {
+  const updates = cars
+    .filter((car) => car.rentalStatus === 'rented')
+    .map(async (car) => {
+      const activeRental = rentals.find((r) => r.carId === car.id);
+
+      if (activeRental !== undefined && isOverdue(activeRental.endDate)) {
+        await updateCarStatus({ ...car, rentalStatus: 'overdue' });
+      }
+    });
+
+  await Promise.all(updates);
 };

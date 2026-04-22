@@ -9,7 +9,7 @@ interface CarListProps {
 const statusLabel: Record<Car['rentalStatus'], string> = {
   available: 'Dostępny',
   rented: 'Wypożyczony',
-  overdue: 'Przeterminowany',
+  overdue: 'Po terminie',
 };
 
 const statusClass: Record<Car['rentalStatus'], string> = {
