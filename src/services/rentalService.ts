@@ -2,6 +2,7 @@ import { FetchJSON } from './api';
 import { API_URL } from '../data/constants';
 import type { Rental } from '../types/rental';
 import type { Car } from '../types/car';
+import { isOverdue } from '../features/cars/utils';
 
 export const fetchRentals = async () => {
   return await FetchJSON(`${API_URL}/rentals`);
@@ -41,21 +42,13 @@ export const checkAndUpdateOverdueStatus = async (
   rentals: Rental[],
   updateCarStatus: (car: Car) => Promise<void>
 ) => {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
   const updates = cars
     .filter((car) => car.rentalStatus === 'rented')
     .map(async (car) => {
       const activeRental = rentals.find((r) => r.carId === car.id);
 
-      if (activeRental) {
-        const endDate = new Date(activeRental.endDate);
-        endDate.setHours(0, 0, 0, 0);
-
-        if (endDate < today) {
-          await updateCarStatus({ ...car, rentalStatus: 'overdue' });
-        }
+      if (activeRental !== undefined && isOverdue(activeRental.endDate)) {
+        await updateCarStatus({ ...car, rentalStatus: 'overdue' });
       }
     });
 
