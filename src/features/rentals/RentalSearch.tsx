@@ -1,4 +1,5 @@
 import type { Rental } from '../../types/rental';
+import ReturnRentalCarButton from './ReturnRentalCarButton';
 
 interface RentalSearchProps {
   phone: string;
@@ -7,6 +8,7 @@ interface RentalSearchProps {
   rentals: Rental[];
   loading: boolean;
   error: string | null;
+  onReturn: (rentalId: string) => void;
 }
 
 const RentalSearch = ({
@@ -16,6 +18,7 @@ const RentalSearch = ({
   rentals,
   loading,
   error,
+  onReturn,
 }: RentalSearchProps) => {
   return (
     <div className="flex flex-col gap-4">
@@ -50,13 +53,15 @@ const RentalSearch = ({
                 <p className="text-xs text-gray-400 mt-0.5">#{rental.id}</p>
               </div>
             </div>
-
-            <div className="flex items-center gap-1.5 text-xs text-gray-500 bg-gray-50 rounded-lg px-3 py-1.5 shrink-0">
-              <span>{rental.startDate}</span>
-              <span className="text-gray-300">
-                <i className="fas fa-arrow-right"></i>
-              </span>
-              <span>{rental.endDate}</span>
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-1.5 text-xs text-gray-500 bg-gray-50 rounded-lg px-3 py-1.5 shrink-0">
+                <span>{rental.startDate}</span>
+                <span className="text-gray-300">
+                  <i className="fas fa-arrow-right"></i>
+                </span>
+                <span>{rental.endDate}</span>
+              </div>
+              <ReturnRentalCarButton rentalId={rental.id} onReturn={onReturn} />
             </div>
           </div>
         </div>
