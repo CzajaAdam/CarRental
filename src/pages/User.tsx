@@ -34,11 +34,9 @@ export const User = () => {
 
   return (
     <div className="min-h-screen flex flex-col lg:flex-row items-center justify-center gap-10 bg-slate-50 px-6 py-10 relative overflow-hidden">
-      {/* Dekoracyjny gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-600/10 via-blue-300/5 to-transparent pointer-events-none" />
+      <div className="absolute inset-0 bg-linear-to-br from-blue-600/10 via-blue-300/5 to-transparent pointer-events-none" />
 
-      {/* PANEL LEWY */}
-      <div className="relative z-10 bg-white shadow-xl rounded-[2rem] p-10 md:p-14 max-w-lg w-full text-center border border-slate-200/60 backdrop-blur-sm">
+      <div className="relative z-10 bg-white shadow-xl rounded-4xl p-10 md:p-14 max-w-lg w-full text-center border border-slate-200/60 backdrop-blur-sm">
         <div className="mx-auto w-24 h-24 bg-blue-50 rounded-3xl flex items-center justify-center mb-6 border border-blue-100 shadow-inner">
           <i className="fas fa-user-circle text-blue-600 text-5xl" />
         </div>
@@ -69,9 +67,7 @@ export const User = () => {
         </div>
       </div>
 
-      {/* PANEL PRAWY */}
-      <section className="relative z-10 bg-slate-900 rounded-[2rem] shadow-2xl overflow-hidden max-w-2xl w-full">
-        {/* Dekoracja */}
+      <section className="relative z-10 bg-slate-900 rounded-4xl shadow-2xl overflow-hidden max-w-2xl w-full">
         <div className="absolute top-0 right-0 w-72 h-72 bg-blue-600/20 rounded-full blur-3xl -mr-20 -mt-20" />
 
         <div className="relative z-10 p-10 md:p-14">
