@@ -1,13 +1,13 @@
 import { useNavigate } from 'react-router-dom';
 import RentalSearch from '../features/rentals/RentalSearch';
 import { useRentals } from '../hooks/useRentals';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useCars } from '../hooks/useCars';
 
 export const User = () => {
   const navigate = useNavigate();
 
-  const { cars, handleUpdateCar } = useCars();
+  const { cars, handleUpdateCar, handleFetchCars } = useCars();
 
   const {
     rentals,
@@ -19,10 +19,14 @@ export const User = () => {
 
   const [phone, setPhone] = useState('');
 
+  useEffect(() => {
+    handleFetchCars();
+  }, [handleFetchCars]);
+
   const handleReturnCar = async (rentalId: string) => {
-    const rental = rentals.find((r) => r.id === rentalId);
-    const car = cars.find((c) => c.id === rental?.carId);
-    if (!rental || !car) return;
+    const rental = rentals.find((rental) => rental.id === rentalId);
+    const car = cars.find((car) => car.id === rental?.carId);
+    if (rental === undefined || car === undefined) return;
 
     await handleUpdateCar({ ...car, rentalStatus: 'available' });
     await handleDeleteRental(rental);
