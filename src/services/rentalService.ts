@@ -1,6 +1,7 @@
 import { FetchJSON } from './api';
 import { API_URL } from '../data/constants';
 import type { Rental } from '../types/rental';
+import type { Car } from '../types/car';
 
 export const fetchRentals = async () => {
   return await FetchJSON(`${API_URL}/rentals`);
@@ -33,4 +34,30 @@ export const fetchRentalsByPhone = async (phone: string) => {
   const rentals = await FetchJSON(`${API_URL}/rentals`);
   const normalized = phone.replace(/\s/g, '');
   return rentals.filter((rental: Rental) => rental.phone.replace(/\s/g, '') === normalized);
+};
+
+export const checkAndUpdateOverdueStatus = async (
+  cars: Car[],
+  rentals: Rental[],
+  updateCarStatus: (car: Car) => Promise<void>
+) => {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const updates = cars
+    .filter((car) => car.rentalStatus === 'rented')
+    .map(async (car) => {
+      const activeRental = rentals.find((r) => r.carId === car.id);
+
+      if (activeRental) {
+        const endDate = new Date(activeRental.endDate);
+        endDate.setHours(0, 0, 0, 0);
+
+        if (endDate < today) {
+          await updateCarStatus({ ...car, rentalStatus: 'overdue' });
+        }
+      }
+    });
+
+  await Promise.all(updates);
 };

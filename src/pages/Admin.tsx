@@ -1,9 +1,28 @@
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import CarManagement from '../features/cars/CarManagement';
 import { Container } from '../layouts/Container';
+import { useCars } from '../hooks/useCars';
+import { useRentals } from '../hooks/useRentals';
+import { checkAndUpdateOverdueStatus } from '../services/rentalService';
 
 export const Admin = () => {
   const navigate = useNavigate();
+
+  // it updates the car status
+  const { cars, handleFetchCars, handleUpdateCar, loading: carsLoading } = useCars();
+  const { rentals, handleFetchRentals, loading: rentalsLoading } = useRentals();
+
+  useEffect(() => {
+    handleFetchCars();
+    handleFetchRentals();
+  }, [handleFetchCars, handleFetchRentals]);
+
+  useEffect(() => {
+    if (!carsLoading && !rentalsLoading && cars.length > 0 && rentals.length > 0) {
+      checkAndUpdateOverdueStatus(cars, rentals, handleUpdateCar);
+    }
+  }, [cars, rentals, carsLoading, rentalsLoading, handleUpdateCar]);
 
   return (
     <Container>
@@ -42,7 +61,16 @@ export const Admin = () => {
           <div className="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-xl shadow-slate-100/50 transition-shadow duration-300 group-hover:shadow-slate-200/60">
             <div className="p-1 bg-slate-50/50 border-b border-slate-100">
               <div className="bg-white rounded-[1.25rem] p-6">
-                <CarManagement />
+                {carsLoading ? (
+                  <div className="flex flex-col items-center justify-center py-12">
+                    <i className="fas fa-circle-notch fa-spin text-3xl text-blue-600 mb-4" />
+                    <p className="text-slate-500 font-medium tracking-tight">
+                      Inicjalizacja floty...
+                    </p>
+                  </div>
+                ) : (
+                  <CarManagement />
+                )}
               </div>
             </div>
           </div>

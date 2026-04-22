@@ -165,7 +165,7 @@ const CarManagement = () => {
               Wypożyczony
             </option>
             <option disabled value="overdue">
-              Przeterminowany
+              Po Terminie
             </option>
           </select>
         </div>
