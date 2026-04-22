@@ -7,8 +7,10 @@ interface ContainerProps {
 
 export const Container = ({ children, className }: ContainerProps) => {
   return (
-    <div className={`flex min-h-screen bg-gray-100`}>
-      <main className={'flex-1 p-6 ' + (className ?? '')}>{children}</main>
+    <div className="min-h-screen w-full bg-gray-100">
+      <div className="max-w-6xl mx-auto">
+        <main className={`p-6 ${className ?? ''}`}>{children}</main>
+      </div>
     </div>
   );
 };
