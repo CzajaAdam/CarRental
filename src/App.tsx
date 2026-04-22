@@ -3,7 +3,7 @@ import { User } from './pages/User';
 import { Admin } from './pages/Admin';
 import { AdminLogin } from './pages/AdminLogin';
 import ProtectedRoute from './components/ProtectedRoute';
-import { RentCar } from './pages/RentCar';
+import { RentCar } from './pages/UserRentCar';
 import { AdminRentals } from './pages/AdminRentals';
 
 export const App = () => {
