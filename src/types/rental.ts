@@ -7,4 +7,5 @@ export type Rental = {
   email: string;
   startDate: string;
   endDate: string;
+  days: string;
 };

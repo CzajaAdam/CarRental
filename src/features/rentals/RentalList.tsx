@@ -14,7 +14,7 @@ const emptyForm = {
   phone: '',
   email: '',
   startDate: new Date().toISOString().split('T')[0],
-  endDate: '',
+  days: '',
 };
 
 const RentalList = ({ cars, onRent }: RentalListProps) => {
@@ -31,14 +31,15 @@ const RentalList = ({ cars, onRent }: RentalListProps) => {
   };
 
   const handleSubmit = () => {
-    const PHONE_RE = /^\+\d{1,3} \d{3} \d{3} \d{3}$/;
+    const PHONE_RE = /^\+[\d\s-]{6,14}$/;
+    const daysNum = parseInt(form.days);
+
     if (
       form.firstName === '' ||
       form.lastName === '' ||
       form.phone === '' ||
       form.email === '' ||
-      form.startDate === '' ||
-      form.endDate === ''
+      form.days === ''
     ) {
       setFormError('Wypełnij wszystkie pola');
       return;
@@ -47,12 +48,19 @@ const RentalList = ({ cars, onRent }: RentalListProps) => {
       setFormError('Numer telefonu musi być w formacie +XX 000 000 000');
       return;
     }
-    if (new Date(form.startDate) >= new Date(form.endDate)) {
-      setFormError('Data zakończenia musi być późniejsza niż data rozpoczęcia');
+    if (isNaN(daysNum) || daysNum < 1) {
+      setFormError('Liczba dni musi być większa niż 0');
       return;
     }
     if (selectedCar !== null) {
-      onRent(selectedCar, form);
+      const start = new Date(form.startDate);
+      const end = new Date(start);
+      end.setDate(end.getDate() + daysNum);
+
+      onRent(selectedCar, {
+        ...form,
+        endDate: end.toISOString().split('T')[0],
+      });
       setSelectedCar(null);
       setForm(emptyForm);
       setFormError(null);
@@ -179,11 +187,11 @@ const RentalList = ({ cars, onRent }: RentalListProps) => {
                 />
               </div>
               <div>
-                <label className="block text-xs text-gray-500 mb-1.5">Data zakończenia</label>
+                <label className="block text-xs text-gray-500 mb-1.5">Liczba dni</label>
                 <input
-                  name="endDate"
-                  type="date"
-                  value={form.endDate}
+                  name="days"
+                  type="number"
+                  value={form.days}
                   onChange={handleChange}
                   className={
                     'w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition'
