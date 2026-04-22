@@ -17,27 +17,13 @@ const RentalSearch = ({
   loading,
   error,
 }: RentalSearchProps) => {
-  const handlePhoneChange = (value: string) => {
-    const digits = value.replace(/\D/g, '');
-    let formatted = '';
-
-    if (digits.length <= 2) formatted = digits;
-    else if (digits.length <= 5) formatted = `${digits.slice(0, 2)} ${digits.slice(2)}`;
-    else if (digits.length <= 8)
-      formatted = `${digits.slice(0, 2)} ${digits.slice(2, 5)} ${digits.slice(5)}`;
-    else
-      formatted = `${digits.slice(0, 2)} ${digits.slice(2, 5)} ${digits.slice(5, 8)} ${digits.slice(8, 11)}`;
-
-    onPhoneChange(formatted ? `+${formatted}` : '');
-  };
-
   return (
     <div className="flex flex-col gap-4">
       <h2 className="text-2xl font-bold text-gray-800">Twoje wypożyczenia</h2>
       <div className="flex gap-2">
         <input
           value={phone}
-          onChange={(e) => handlePhoneChange(e.target.value)}
+          onChange={(e) => onPhoneChange(e.target.value)}
           placeholder="+48 000 000 000"
           className="border border-gray-200 rounded-lg px-3 py-2 text-sm flex-1"
         />
@@ -49,9 +35,30 @@ const RentalSearch = ({
       {rentals.map((rental) => (
         <div
           key={rental.id}
-          className="bg-white border border-gray-200 rounded-xl px-5 py-4 shadow-sm"
+          className="group bg-white border border-gray-100 rounded-2xl px-5 py-4 shadow-sm hover:shadow-md hover:border-blue-100 transition-all duration-200"
         >
-          {rental.firstName} {rental.lastName} — {rental.startDate} / {rental.endDate}
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center text-sm font-semibold shrink-0">
+                {rental.firstName[0].toUpperCase()}
+                {rental.lastName[0].toUpperCase()}
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-gray-800 leading-tight">
+                  {rental.firstName} {rental.lastName}
+                </p>
+                <p className="text-xs text-gray-400 mt-0.5">#{rental.id}</p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-1.5 text-xs text-gray-500 bg-gray-50 rounded-lg px-3 py-1.5 shrink-0">
+              <span>{rental.startDate}</span>
+              <span className="text-gray-300">
+                <i className="fas fa-arrow-right"></i>
+              </span>
+              <span>{rental.endDate}</span>
+            </div>
+          </div>
         </div>
       ))}
       {error && (

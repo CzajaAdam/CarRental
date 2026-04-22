@@ -31,6 +31,7 @@ const RentalList = ({ cars, onRent }: RentalListProps) => {
   };
 
   const handleSubmit = () => {
+    const PHONE_RE = /^\+\d{1,3} \d{3} \d{3} \d{3}$/;
     if (
       form.firstName === '' ||
       form.lastName === '' ||
@@ -40,6 +41,10 @@ const RentalList = ({ cars, onRent }: RentalListProps) => {
       form.endDate === ''
     ) {
       setFormError('Wypełnij wszystkie pola');
+      return;
+    }
+    if (!PHONE_RE.test(form.phone)) {
+      setFormError('Numer telefonu musi być w formacie +XX 000 000 000');
       return;
     }
     if (new Date(form.startDate) >= new Date(form.endDate)) {
