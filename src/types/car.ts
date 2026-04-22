@@ -5,5 +5,5 @@ export type Car = {
   year: number;
   pricePerDay: number;
   licensePlate: string;
-  rentalStatus: "available" | "rented" | "overdue";
+  rentalStatus: 'available' | 'rented' | 'overdue';
 };
