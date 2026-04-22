@@ -32,6 +32,7 @@ const RentalList = ({ cars, onRent }: RentalListProps) => {
 
   const handleSubmit = () => {
     const PHONE_RE = /^\+[\d\s-]{6,14}$/;
+    const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const daysNum = parseInt(form.days);
 
     if (
@@ -44,14 +45,22 @@ const RentalList = ({ cars, onRent }: RentalListProps) => {
       setFormError('Wypełnij wszystkie pola');
       return;
     }
+
     if (!PHONE_RE.test(form.phone)) {
       setFormError('Numer telefonu musi być w formacie +XX 000 000 000');
       return;
     }
+
+    if (!EMAIL_RE.test(form.email)) {
+      setFormError('Podaj poprawny adres email');
+      return;
+    }
+
     if (isNaN(daysNum) || daysNum < 1) {
       setFormError('Liczba dni musi być większa niż 0');
       return;
     }
+
     if (selectedCar !== null) {
       const start = new Date(form.startDate);
       const end = new Date(start);
@@ -61,6 +70,7 @@ const RentalList = ({ cars, onRent }: RentalListProps) => {
         ...form,
         endDate: end.toISOString().split('T')[0],
       });
+
       setSelectedCar(null);
       setForm(emptyForm);
       setFormError(null);
