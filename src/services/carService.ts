@@ -22,7 +22,7 @@ export const updateCar = async (car: Car) => {
   });
 };
 
-export const deleteCar = async (id: number) => {
+export const deleteCar = async (id: string) => {
   return await FetchJSON(`${API_URL}/cars/${id}`, {
     method: 'DELETE',
   });
