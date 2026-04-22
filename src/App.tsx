@@ -1,5 +1,5 @@
 import { Routes, Route, BrowserRouter } from 'react-router-dom';
-import { Home } from './pages/Home';
+import { User } from './pages/User';
 import { Admin } from './pages/Admin';
 import { AdminLogin } from './pages/AdminLogin';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -8,7 +8,7 @@ export const App = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<User />} />
         <Route
           path="/admin"
           element={
