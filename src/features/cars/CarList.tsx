@@ -14,8 +14,8 @@ const statusLabel: Record<Car['rentalStatus'], string> = {
 
 const statusClass: Record<Car['rentalStatus'], string> = {
   available: 'bg-green-100 text-green-700',
-  rented: 'bg-red-100 text-red-700',
-  overdue: 'bg-orange-100 text-orange-700',
+  rented: 'bg-orange-100 text-orange-700',
+  overdue: 'bg-red-100 text-red-700',
 };
 
 const CarList = ({ cars, onEdit, onDelete }: CarListProps) => {

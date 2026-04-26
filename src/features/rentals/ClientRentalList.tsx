@@ -129,7 +129,7 @@ const RentalList = ({ cars, onRent }: RentalListProps) => {
                 onClick={handleClose}
                 className="text-gray-400 hover:text-gray-600 transition-colors text-xl leading-none"
               >
-                ✕
+                X
               </button>
             </div>
 
